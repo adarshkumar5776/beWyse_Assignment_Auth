@@ -8,7 +8,7 @@ import uuid
 from Auth_user_app.mongoDbConnection import MongoDBConnection
 import firebase_admin
 from firebase_admin import auth, credentials
-import jwt
+
 
 config2 = {
   "type": "service_account",
@@ -37,8 +37,6 @@ config={
   'databaseURL': "https://bewyseauth-default-rtdb.firebaseio.com/"
 }
 
-shared_data = {}
-shared_data['TOKEN'] = ''
 
 firebase = pyrebase.initialize_app(config)
 authe = firebase.auth()
@@ -115,8 +113,7 @@ def user_register(request):
         
         if not username or username.isspace():
             username = generate_unique_username(email)
-            username = username  
-                    
+            username = username                      
         try:
             user_collection = MongoDBConnection().get_collection("user_details")
             existing_user = user_collection.find_one({"username": username})
