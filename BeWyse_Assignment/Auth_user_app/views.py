@@ -45,7 +45,6 @@ database = firebase.database()
 @csrf_exempt
 def user_login(request):
     if request.method == 'POST':
-        global TOKEN
         data = json.loads(request.body.decode('utf-8'))
         username = data.get('username', '')
         password = data.get('password', '')
@@ -133,6 +132,8 @@ def user_register(request):
 @csrf_exempt
 def user_view(request):
     if 'uid' in request.session:
+        decoded_token = auth.verify_id_token(get_custom_token)
+        request.uid = decoded_token.get('uid')
         get_custom_token = request.headers.get('Authorization')
         if not get_custom_token:
              return JsonResponse({"message": "Unauthorized Access"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -191,9 +192,8 @@ def user_edit(request):
                         "last_name": last_name
                     }}
                 )
-            # decoded_token = auth.verify_id_token(get_custom_token)
-            # request.uid = decoded_token.get('uid')
-            #print(request.uid)
+            decoded_token = auth.verify_id_token(get_custom_token)
+            request.uid = decoded_token.get('uid')
             if not get_custom_token:
                 return JsonResponse({"message": "Unauthorized Access"}, status=status.HTTP_401_UNAUTHORIZED)
 
