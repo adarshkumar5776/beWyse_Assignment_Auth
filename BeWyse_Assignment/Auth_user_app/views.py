@@ -173,9 +173,9 @@ def user_register(request):
 @csrf_exempt
 def user_view(request):
     if "uid" in request.session:
+        get_custom_token = request.headers.get("Authorization")
         decoded_token = auth.verify_id_token(get_custom_token)
         request.uid = decoded_token.get('uid')
-        get_custom_token = request.headers.get("Authorization")
         if not get_custom_token:
             return JsonResponse(
                 {"message": "Unauthorized Access"}, status=status.HTTP_401_UNAUTHORIZED
